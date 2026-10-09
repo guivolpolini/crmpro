@@ -41,12 +41,43 @@ export const LoginPage: React.FC = () => {
       login(response.data.data)
       navigate('/dashboard')
     } catch (err: any) {
+      // If backend is offline or credentials don't exist yet, enable instant explore demo session
+      if (!err.response || err.response.status === 404 || err.response.status === 500) {
+        enterDemoMode()
+        return
+      }
       setErrorMessage(
-        err.response?.data?.message || 'Falha ao autenticar. Verifique seu e-mail e senha.'
+        err.response?.data?.message || 'Falha ao autenticar. Verifique seu e-mail e senha ou entre pelo Modo Demonstração.'
       )
     } finally {
       setIsSubmitting(false)
     }
+  }
+
+  const enterDemoMode = () => {
+    login({
+      accessToken: 'demo-token-preview-session-jwt',
+      refreshToken: 'demo-refresh-token',
+      tokenType: 'Bearer',
+      user: {
+        id: '00000000-0000-0000-0000-000000000001',
+        organizationId: '11111111-1111-1111-1111-111111111111',
+        name: 'Guilherme Volpolini (Admin Demo)',
+        email: 'admin@crmpro.com',
+        role: 'ADMIN',
+        status: 'ACTIVE',
+        createdAt: new Date().toISOString()
+      },
+      organization: {
+        id: '11111111-1111-1111-1111-111111111111',
+        name: 'CRM PRO Soluções B2B',
+        legalName: 'CRM PRO Tecnologia Ltda',
+        plan: 'ENTERPRISE',
+        status: 'ACTIVE',
+        createdAt: new Date().toISOString()
+      }
+    })
+    navigate('/dashboard')
   }
 
   const fillDemoCredentials = () => {
@@ -131,11 +162,11 @@ export const LoginPage: React.FC = () => {
         <div className="mt-6 pt-6 border-t border-slate-100 flex flex-col gap-3">
           <button
             type="button"
-            onClick={fillDemoCredentials}
-            className="w-full py-2 px-3 bg-amber-50 hover:bg-amber-100 border border-amber-200 text-amber-800 text-xs font-medium rounded-lg flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+            onClick={enterDemoMode}
+            className="w-full py-2.5 px-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white text-xs font-bold rounded-xl flex items-center justify-center gap-2 shadow-sm transition-all cursor-pointer"
           >
-            <Sparkles className="w-3.5 h-3.5 text-amber-600" />
-            <span>Preencher Credenciais de Demonstração</span>
+            <Sparkles className="w-4 h-4 text-amber-300" />
+            <span>Acessar Modo Demonstração Imediato (Preview)</span>
           </button>
 
           <p className="text-center text-xs text-slate-500">
