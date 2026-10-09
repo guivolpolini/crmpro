@@ -14,7 +14,8 @@ import {
   LogOut,
   ShieldCheck,
   ChevronRight,
-  Sparkles
+  Sparkles,
+  Settings
 } from 'lucide-react'
 
 export const AppLayout: React.FC = () => {
@@ -36,7 +37,8 @@ export const AppLayout: React.FC = () => {
     { name: 'Empresas Clientes', path: '/companies', icon: Building2 },
     { name: 'Tarefas & Atividades', path: '/tasks', icon: CheckSquare },
     { name: 'Propostas Comerciais', path: '/proposals', icon: FileSpreadsheet },
-    { name: 'Relatórios & Métricas', path: '/reports', icon: BarChart3 }
+    { name: 'Relatórios & Métricas', path: '/reports', icon: BarChart3 },
+    { name: 'Configurações', path: '/settings', icon: Settings }
   ]
 
   return (

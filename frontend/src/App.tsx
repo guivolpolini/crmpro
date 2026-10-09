@@ -14,6 +14,7 @@ import { TasksPage } from '@/features/tasks/pages/TasksPage'
 import { ProposalsPage } from '@/features/proposals/pages/ProposalsPage'
 import { ReportsPage } from '@/features/reports/pages/ReportsPage'
 import { AiAssistantPage } from '@/features/ai/pages/AiAssistantPage'
+import { OrganizationSettingsPage } from '@/features/organization/pages/OrganizationSettingsPage'
 
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { isAuthenticated, isLoading } = useAuth()
@@ -60,6 +61,7 @@ export function App() {
             <Route path="tasks" element={<TasksPage />} />
             <Route path="proposals" element={<ProposalsPage />} />
             <Route path="reports" element={<ReportsPage />} />
+            <Route path="settings" element={<OrganizationSettingsPage />} />
           </Route>
 
           <Route path="*" element={<Navigate to="/login" replace />} />

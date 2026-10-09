@@ -20,7 +20,7 @@ CRM B2B moderno com arquitetura Multi-Tenant isolada, funil de vendas interativo
 - **PostgreSQL 16** com versionamento atômico via **Flyway Migrations** (V1 a V4)
 - **Spring Security 6** + **JWT (JJWT 0.12.6)** com HMAC-SHA256 e rotação de Refresh Token
 - **Multi-Tenancy por Coluna Discriminadora**: `organization_id NOT NULL` em todas as tabelas comerciais com resolução contextual via `TenantContext` (ThreadLocal).
-- **Testes Automatizados**: Spring Boot Test com banco em memória H2 (11 testes cobrindo segurança, multi-tenancy, conversão atômica, pipeline, propostas, relatórios e assistente comercial IA).
+- **Testes Automatizados**: Spring Boot Test com banco em memória H2 (12 testes cobrindo segurança, multi-tenancy, conversão atômica, pipeline, propostas, relatórios, assistente IA e gestão de organização/equipe).
 
 ### Frontend
 - **React 19** + **TypeScript 6** com **Vite 8**
@@ -146,6 +146,7 @@ A suíte de testes backend valida todos os fluxos críticos:
 - `DashboardAnalyticsIntegrationTest`: valida cálculos de receita ganha, pipeline aberto e taxas de conversão.
 - `ReportPerformanceIntegrationTest`: valida agregação de faturamento mensal, ranking de vendedores e exportação CSV.
 - `AiCommercialIntegrationTest`: valida geração de pitches e abordagens via LLM com fallback resiliente.
+- `OrganizationManagementIntegrationTest`: valida atualização cadastral da organização e gestão multi-usuário da equipe comercial.
 
 ---
 
