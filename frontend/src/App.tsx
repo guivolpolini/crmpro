@@ -5,6 +5,9 @@ import { LoginPage } from '@/features/auth/pages/LoginPage'
 import { RegisterPage } from '@/features/auth/pages/RegisterPage'
 import { AppLayout } from '@/components/layout/AppLayout'
 import { DashboardPage } from '@/features/dashboard/pages/DashboardPage'
+import { LeadsPage } from '@/features/leads/pages/LeadsPage'
+import { ContactsPage } from '@/features/contacts/pages/ContactsPage'
+import { CompaniesPage } from '@/features/companies/pages/CompaniesPage'
 
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { isAuthenticated, isLoading } = useAuth()
@@ -42,12 +45,12 @@ export function App() {
           >
             <Route index element={<Navigate to="/dashboard" replace />} />
             <Route path="dashboard" element={<DashboardPage />} />
-            {/* Future phases routes will seamlessly mount here */}
+            <Route path="leads" element={<LeadsPage />} />
+            <Route path="contacts" element={<ContactsPage />} />
+            <Route path="companies" element={<CompaniesPage />} />
+            {/* Future phases routes */}
             <Route path="pipeline" element={<DashboardPage />} />
-            <Route path="leads" element={<DashboardPage />} />
             <Route path="deals" element={<DashboardPage />} />
-            <Route path="contacts" element={<DashboardPage />} />
-            <Route path="companies" element={<DashboardPage />} />
             <Route path="tasks" element={<DashboardPage />} />
             <Route path="proposals" element={<DashboardPage />} />
             <Route path="reports" element={<DashboardPage />} />
