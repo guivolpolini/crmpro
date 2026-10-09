@@ -13,7 +13,8 @@ import {
   BarChart3,
   LogOut,
   ShieldCheck,
-  ChevronRight
+  ChevronRight,
+  Sparkles
 } from 'lucide-react'
 
 export const AppLayout: React.FC = () => {
@@ -27,6 +28,7 @@ export const AppLayout: React.FC = () => {
 
   const navItems = [
     { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
+    { name: 'Assistente IA', path: '/ai-assistant', icon: Sparkles },
     { name: 'Funil Kanban', path: '/pipeline', icon: Kanban },
     { name: 'Leads', path: '/leads', icon: Users },
     { name: 'Negócios / Oportunidades', path: '/deals', icon: Briefcase },

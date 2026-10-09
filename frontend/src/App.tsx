@@ -13,6 +13,7 @@ import { DealsListPage } from '@/features/deals/pages/DealsListPage'
 import { TasksPage } from '@/features/tasks/pages/TasksPage'
 import { ProposalsPage } from '@/features/proposals/pages/ProposalsPage'
 import { ReportsPage } from '@/features/reports/pages/ReportsPage'
+import { AiAssistantPage } from '@/features/ai/pages/AiAssistantPage'
 
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { isAuthenticated, isLoading } = useAuth()
@@ -50,6 +51,7 @@ export function App() {
           >
             <Route index element={<Navigate to="/dashboard" replace />} />
             <Route path="dashboard" element={<DashboardPage />} />
+            <Route path="ai-assistant" element={<AiAssistantPage />} />
             <Route path="pipeline" element={<KanbanBoardPage />} />
             <Route path="deals" element={<DealsListPage />} />
             <Route path="leads" element={<LeadsPage />} />

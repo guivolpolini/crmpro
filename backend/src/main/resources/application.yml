@@ -46,3 +46,10 @@ management:
   endpoint:
     health:
       show-details: always
+
+# FreeLLMAPI AI Integration
+ai:
+  openai:
+    base-url: ${OPENAI_BASE_URL:http://localhost:3001/v1}
+    api-key: ${OPENAI_API_KEY:default_key}
+    model: ${OPENAI_MODEL:auto}
