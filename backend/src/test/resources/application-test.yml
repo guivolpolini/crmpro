@@ -1,0 +1,22 @@
+spring:
+  application:
+    name: crmpro-backend-test
+  datasource:
+    url: jdbc:h2:mem:crmpro_test;DB_CLOSE_DELAY=-1;MODE=PostgreSQL
+    username: sa
+    password: ""
+    driver-class-name: org.h2.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+    open-in-view: false
+  flyway:
+    enabled: false
+
+jwt:
+  secret: 4c9b986b245cfbc1865910fae7401f81d11ffbe81db577a45638a165eb340801
+  expiration-ms: 3600000
+  refresh-expiration-ms: 86400000
