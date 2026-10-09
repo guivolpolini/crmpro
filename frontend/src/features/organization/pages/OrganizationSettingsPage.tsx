@@ -138,14 +138,37 @@ export const OrganizationSettingsPage: React.FC = () => {
           </p>
         </div>
 
-        <button
-          onClick={fetchData}
-          disabled={loading}
-          className="flex items-center gap-2 px-3.5 py-2 bg-white border border-slate-200 hover:bg-slate-50 rounded-xl text-xs font-semibold text-slate-700 shadow-xs"
-        >
-          <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
-          Atualizar
-        </button>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={async () => {
+              if (!confirm('Deseja popular a organização com empresas, contatos, leads e negócios de demonstração?')) return
+              setLoading(true)
+              try {
+                await api.post('/demo/seed')
+                setMessage({ text: 'Dados de demonstração gerados com sucesso!', type: 'success' })
+                fetchData()
+              } catch (err: any) {
+                setMessage({ text: err.response?.data?.message || 'Falha ao gerar dados demo', type: 'error' })
+              } finally {
+                setLoading(false)
+              }
+            }}
+            disabled={loading}
+            className="flex items-center gap-1.5 px-3.5 py-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white rounded-xl text-xs font-semibold shadow-xs transition-colors"
+          >
+            <BadgeCheck className="w-3.5 h-3.5" />
+            Gerar Dados de Demonstração
+          </button>
+
+          <button
+            onClick={fetchData}
+            disabled={loading}
+            className="flex items-center gap-2 px-3.5 py-2 bg-white border border-slate-200 hover:bg-slate-50 rounded-xl text-xs font-semibold text-slate-700 shadow-xs"
+          >
+            <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
+            Atualizar
+          </button>
+        </div>
       </div>
 
       {message && (
