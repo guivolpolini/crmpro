@@ -13,10 +13,50 @@ services:
       - crmpro_pgdata:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U crmpro_user -d crmpro_db"]
-      interval: 10s
+      interval: 5s
       timeout: 5s
       retries: 5
+    networks:
+      - crmpro-network
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: crmpro-backend
+    restart: always
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/crmpro_db
+      SPRING_DATASOURCE_USERNAME: crmpro_user
+      SPRING_DATASOURCE_PASSWORD: crmpro_password
+      JWT_SECRET: 4c9b986b245cfbc1865910fae7401f81d11ffbe81db577a45638a165eb340801
+      PORT: 8080
+    ports:
+      - "8080:8080"
+    networks:
+      - crmpro-network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: crmpro-frontend
+    restart: always
+    depends_on:
+      - backend
+    ports:
+      - "80:80"
+      - "3000:80"
+    networks:
+      - crmpro-network
 
 volumes:
   crmpro_pgdata:
     driver: local
+
+networks:
+  crmpro-network:
+    driver: bridge

@@ -95,17 +95,25 @@ crmpro/
 ## 🛠️ Como Executar Localmente
 
 ### Pré-requisitos
-- **Java 21** ou superior
-- **Node.js 20+** e **npm**
-- **Docker** e **Docker Compose** (opcional, para rodar PostgreSQL)
+- **Docker** e **Docker Compose** (recomendado para inicialização em 1 comando)
+- Ou **Java 21/24** + **Node.js 20+** e **npm** para desenvolvimento local
 
-### 1. Iniciar Banco de Dados
+### Opção 1: Inicialização Completa com Docker (1 Comando)
+Para subir o banco de dados PostgreSQL 16, a API Spring Boot 3.4 e o Frontend React com Nginx:
 ```bash
-docker compose up -d
+docker compose up --build -d
 ```
-O PostgreSQL estará disponível em `localhost:5432` com usuário `crmpro` e senha `crmpro_secret`.
+Acesse a aplicação pronta em `http://localhost:3000` ou `http://localhost`.
 
-### 2. Iniciar API Backend
+### Opção 2: Execução em Modo Desenvolvimento Local
+
+#### 1. Iniciar Banco de Dados
+```bash
+docker compose up -d postgres
+```
+O PostgreSQL estará disponível em `localhost:5432` com usuário `crmpro_user` e senha `crmpro_password`.
+
+#### 2. Iniciar API Backend
 ```bash
 cd backend
 ./mvnw spring-boot:run
@@ -113,12 +121,12 @@ cd backend
 A API iniciará na porta `8080`.
 As migrações do banco serão aplicadas automaticamente pelo Flyway.
 
-Para rodar a suíte completa de 9 testes automatizados:
+Para rodar a suíte completa de 10 testes automatizados:
 ```bash
 ./mvnw test
 ```
 
-### 3. Iniciar Frontend
+#### 3. Iniciar Frontend
 ```bash
 cd frontend
 npm install
