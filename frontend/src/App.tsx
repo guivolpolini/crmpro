@@ -12,6 +12,7 @@ import { KanbanBoardPage } from '@/features/pipeline/pages/KanbanBoardPage'
 import { DealsListPage } from '@/features/deals/pages/DealsListPage'
 import { TasksPage } from '@/features/tasks/pages/TasksPage'
 import { ProposalsPage } from '@/features/proposals/pages/ProposalsPage'
+import { ReportsPage } from '@/features/reports/pages/ReportsPage'
 
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { isAuthenticated, isLoading } = useAuth()
@@ -56,8 +57,7 @@ export function App() {
             <Route path="companies" element={<CompaniesPage />} />
             <Route path="tasks" element={<TasksPage />} />
             <Route path="proposals" element={<ProposalsPage />} />
-            {/* Future reports route */}
-            <Route path="reports" element={<DashboardPage />} />
+            <Route path="reports" element={<ReportsPage />} />
           </Route>
 
           <Route path="*" element={<Navigate to="/login" replace />} />
