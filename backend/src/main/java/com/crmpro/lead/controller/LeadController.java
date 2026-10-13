@@ -80,4 +80,11 @@ public class LeadController {
         ConvertLeadResponse response = leadService.convertLead(id, request);
         return ResponseEntity.ok(ApiResponse.ok("Lead convertido com sucesso", response));
     }
+
+    @PostMapping("/import-csv")
+    @Operation(summary = "Importação em lote de leads via conteúdo CSV (Nome, Empresa, Email, Telefone, Origem)")
+    public ResponseEntity<ApiResponse<LeadCsvImportResult>> importCsv(@RequestBody String csvContent) {
+        LeadCsvImportResult result = leadService.importLeadsFromCsv(csvContent);
+        return ResponseEntity.ok(ApiResponse.ok("Processamento de importação concluído", result));
+    }
 }

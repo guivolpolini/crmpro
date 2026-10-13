@@ -5,6 +5,7 @@ import com.crmpro.proposal.dto.ProductRequest;
 import com.crmpro.proposal.dto.ProductResponse;
 import com.crmpro.proposal.dto.ProposalRequest;
 import com.crmpro.proposal.dto.ProposalResponse;
+import com.crmpro.proposal.service.ProposalPdfService;
 import com.crmpro.proposal.service.ProposalService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -24,6 +25,7 @@ import java.util.UUID;
 public class ProposalController {
 
     private final ProposalService proposalService;
+    private final ProposalPdfService proposalPdfService;
 
     // --- Products ---
 
@@ -74,5 +76,15 @@ public class ProposalController {
     ) {
         ProposalResponse response = proposalService.updateStatus(id, status);
         return ResponseEntity.ok(ApiResponse.ok("Status da proposta atualizado", response));
+    }
+
+    @GetMapping("/{id}/pdf")
+    @Operation(summary = "Gerar e baixar proposta comercial oficial em formato PDF")
+    public ResponseEntity<byte[]> getProposalPdf(@PathVariable UUID id) {
+        byte[] pdfBytes = proposalPdfService.generateProposalPdf(id);
+        return ResponseEntity.ok()
+                .header(org.springframework.http.HttpHeaders.CONTENT_TYPE, org.springframework.http.MediaType.APPLICATION_PDF_VALUE)
+                .header(org.springframework.http.HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"proposta-" + id + ".pdf\"")
+                .body(pdfBytes);
     }
 }

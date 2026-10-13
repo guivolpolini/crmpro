@@ -14,6 +14,9 @@ import {
   LogOut,
   ShieldCheck,
   ChevronRight,
+  Calendar,
+  Bell,
+  ShieldAlert,
   Sparkles,
   Settings
 } from 'lucide-react'
@@ -21,6 +24,7 @@ import {
 export const AppLayout: React.FC = () => {
   const { user, organization, logout } = useAuth()
   const navigate = useNavigate()
+  const [showNotifications, setShowNotifications] = React.useState(false)
 
   const handleLogout = () => {
     logout()
@@ -31,6 +35,7 @@ export const AppLayout: React.FC = () => {
     { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
     { name: 'Assistente IA', path: '/ai-assistant', icon: Sparkles },
     { name: 'Funil Kanban', path: '/pipeline', icon: Kanban },
+    { name: 'Agenda & Calendário', path: '/calendar', icon: Calendar },
     { name: 'Leads', path: '/leads', icon: Users },
     { name: 'Negócios / Oportunidades', path: '/deals', icon: Briefcase },
     { name: 'Contatos', path: '/contacts', icon: Contact2 },
@@ -38,6 +43,7 @@ export const AppLayout: React.FC = () => {
     { name: 'Tarefas & Atividades', path: '/tasks', icon: CheckSquare },
     { name: 'Propostas Comerciais', path: '/proposals', icon: FileSpreadsheet },
     { name: 'Relatórios & Métricas', path: '/reports', icon: BarChart3 },
+    { name: 'Trilha de Auditoria', path: '/audit-logs', icon: ShieldAlert },
     { name: 'Configurações', path: '/settings', icon: Settings }
   ]
 
@@ -127,10 +133,51 @@ export const AppLayout: React.FC = () => {
             <span className="font-semibold text-slate-800">Ambiente Comercial</span>
           </div>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-4 relative">
             <div className="flex items-center gap-2 text-xs bg-slate-100 px-3 py-1.5 rounded-full text-slate-600 font-medium">
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
               Tenant: <span className="font-semibold text-slate-900">{organization?.name}</span>
+            </div>
+
+            {/* Notification Bell */}
+            <div className="relative">
+              <button
+                onClick={() => setShowNotifications(!showNotifications)}
+                className="p-2 rounded-xl text-slate-500 hover:text-slate-800 hover:bg-slate-100 relative transition-colors cursor-pointer"
+                title="Notificações"
+              >
+                <Bell className="w-4 h-4" />
+                <span className="absolute top-1 right-1 w-2 h-2 bg-blue-600 rounded-full animate-ping"></span>
+                <span className="absolute top-1 right-1 w-2 h-2 bg-blue-600 rounded-full"></span>
+              </button>
+
+              {showNotifications && (
+                <div className="absolute right-0 mt-2 w-80 bg-white rounded-2xl border border-slate-200 shadow-xl p-4 z-50 text-left">
+                  <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+                    <span className="font-bold text-xs text-slate-900 uppercase tracking-wider">
+                      Centro de Notificações
+                    </span>
+                    <span className="text-[10px] bg-blue-50 text-blue-700 px-2 py-0.5 rounded-full font-bold">
+                      3 novas
+                    </span>
+                  </div>
+
+                  <div className="py-2 space-y-2 text-xs">
+                    <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-100 hover:bg-slate-100/80 transition-colors cursor-pointer">
+                      <p className="font-semibold text-slate-800">Follow-up com Lead</p>
+                      <p className="text-slate-500 text-[11px] mt-0.5">Retornar proposta enviada para Metalúrgica Silva</p>
+                    </div>
+                    <div className="p-2.5 rounded-xl bg-blue-50/50 border border-blue-100 hover:bg-blue-100/80 transition-colors cursor-pointer">
+                      <p className="font-semibold text-blue-900">Nova Proposta Emitida</p>
+                      <p className="text-blue-700 text-[11px] mt-0.5">Proposta PROP-2026-8401 pronta para download em PDF</p>
+                    </div>
+                    <div className="p-2.5 rounded-xl bg-purple-50/50 border border-purple-100 hover:bg-purple-100/80 transition-colors cursor-pointer">
+                      <p className="font-semibold text-purple-900">Auditoria & Segurança</p>
+                      <p className="text-purple-700 text-[11px] mt-0.5">Rate limiter ativo: 0 anomalias detectadas no login</p>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </header>

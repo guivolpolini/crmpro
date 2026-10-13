@@ -15,6 +15,8 @@ import { ProposalsPage } from '@/features/proposals/pages/ProposalsPage'
 import { ReportsPage } from '@/features/reports/pages/ReportsPage'
 import { AiAssistantPage } from '@/features/ai/pages/AiAssistantPage'
 import { OrganizationSettingsPage } from '@/features/organization/pages/OrganizationSettingsPage'
+import { CalendarPage } from '@/features/tasks/pages/CalendarPage'
+import { AuditLogsPage } from '@/features/organization/pages/AuditLogsPage'
 
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { isAuthenticated, isLoading } = useAuth()
@@ -54,6 +56,7 @@ export function App() {
             <Route path="dashboard" element={<DashboardPage />} />
             <Route path="ai-assistant" element={<AiAssistantPage />} />
             <Route path="pipeline" element={<KanbanBoardPage />} />
+            <Route path="calendar" element={<CalendarPage />} />
             <Route path="deals" element={<DealsListPage />} />
             <Route path="leads" element={<LeadsPage />} />
             <Route path="contacts" element={<ContactsPage />} />
@@ -61,6 +64,7 @@ export function App() {
             <Route path="tasks" element={<TasksPage />} />
             <Route path="proposals" element={<ProposalsPage />} />
             <Route path="reports" element={<ReportsPage />} />
+            <Route path="audit-logs" element={<AuditLogsPage />} />
             <Route path="settings" element={<OrganizationSettingsPage />} />
           </Route>
 

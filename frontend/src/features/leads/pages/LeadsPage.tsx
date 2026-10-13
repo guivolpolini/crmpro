@@ -12,7 +12,8 @@ import {
   Sparkles,
   Loader2,
   CheckCircle2,
-  X
+  X,
+  Upload
 } from 'lucide-react'
 
 export const LeadsPage: React.FC = () => {
@@ -90,6 +91,23 @@ export const LeadsPage: React.FC = () => {
     }
   }
 
+  const handleImportCsv = async (file: File) => {
+    try {
+      const text = await file.text()
+      const res = await api.post('/leads/import-csv', text, {
+        headers: { 'Content-Type': 'text/plain' }
+      })
+      const result = res.data.data
+      setActionSuccessMessage(
+        `Importação concluída: ${result.successCount} leads importados com sucesso! (${result.errorCount} erros)`
+      )
+      fetchLeads()
+      setTimeout(() => setActionSuccessMessage(null), 6000)
+    } catch (err: any) {
+      alert(err.response?.data?.message || 'Erro ao importar arquivo CSV')
+    }
+  }
+
   const getStatusBadge = (status: LeadStatus) => {
     const map: Record<LeadStatus, { label: string; bg: string; text: string }> = {
       NEW: { label: 'Novo', bg: 'bg-blue-50', text: 'text-blue-700 border-blue-200' },
@@ -120,13 +138,29 @@ export const LeadsPage: React.FC = () => {
           </p>
         </div>
 
-        <button
-          onClick={() => setIsModalOpen(true)}
-          className="py-2.5 px-4 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-xl shadow-md shadow-blue-500/20 flex items-center gap-2 transition-all cursor-pointer"
-        >
-          <Plus className="w-4 h-4" />
-          <span>Novo Lead</span>
-        </button>
+        <div className="flex items-center gap-2">
+          <label className="py-2.5 px-4 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 text-sm font-semibold rounded-xl shadow-xs flex items-center gap-2 transition-all cursor-pointer">
+            <Upload className="w-4 h-4 text-slate-500" />
+            <span>Importar CSV</span>
+            <input
+              type="file"
+              accept=".csv"
+              className="hidden"
+              onChange={(e) => {
+                const file = e.target.files?.[0]
+                if (file) handleImportCsv(file)
+              }}
+            />
+          </label>
+
+          <button
+            onClick={() => setIsModalOpen(true)}
+            className="py-2.5 px-4 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-xl shadow-md shadow-blue-500/20 flex items-center gap-2 transition-all cursor-pointer"
+          >
+            <Plus className="w-4 h-4" />
+            <span>Novo Lead</span>
+          </button>
+        </div>
       </div>
 
       {actionSuccessMessage && (

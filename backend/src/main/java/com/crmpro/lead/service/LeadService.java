@@ -149,4 +149,73 @@ public class LeadService {
                 .message("Lead convertido com sucesso em contato e empresa")
                 .build();
     }
+
+    @Transactional
+    public LeadCsvImportResult importLeadsFromCsv(String csvContent) {
+        if (csvContent == null || csvContent.isBlank()) {
+            return LeadCsvImportResult.builder()
+                    .totalProcessed(0)
+                    .successCount(0)
+                    .errorCount(0)
+                    .errorMessages(java.util.List.of("Arquivo CSV vazio."))
+                    .build();
+        }
+
+        String[] lines = csvContent.split("\\r?\\n");
+        int success = 0;
+        int error = 0;
+        java.util.List<String> errors = new java.util.ArrayList<>();
+
+        boolean headerSkipped = false;
+        for (int i = 0; i < lines.length; i++) {
+            String line = lines[i].trim();
+            if (line.isEmpty()) continue;
+
+            // Pular cabeçalho
+            if (!headerSkipped && (line.toLowerCase().contains("nome") || line.toLowerCase().contains("name") || line.toLowerCase().contains("email"))) {
+                headerSkipped = true;
+                continue;
+            }
+
+            // Suporta separador por vírgula ou ponto-e-vírgula
+            String[] parts = line.contains(";") ? line.split(";") : line.split(",");
+            if (parts.length < 1 || parts[0].trim().isEmpty()) {
+                error++;
+                errors.add("Linha " + (i + 1) + ": Nome do lead obrigatório.");
+                continue;
+            }
+
+            try {
+                String name = parts[0].trim();
+                String company = parts.length > 1 ? parts[1].trim() : "";
+                String email = parts.length > 2 ? parts[2].trim() : "";
+                String phone = parts.length > 3 ? parts[3].trim() : "";
+                String source = parts.length > 4 ? parts[4].trim() : "IMPORT_CSV";
+
+                Lead lead = Lead.builder()
+                        .name(name)
+                        .companyName(company.isBlank() ? null : company)
+                        .email(email.isBlank() ? null : email)
+                        .phone(phone.isBlank() ? null : phone)
+                        .source(source.isBlank() ? "IMPORT_CSV" : source)
+                        .status(LeadStatus.NEW)
+                        .score(50)
+                        .notes("Importado em lote via arquivo CSV.")
+                        .build();
+
+                leadRepository.save(lead);
+                success++;
+            } catch (Exception ex) {
+                error++;
+                errors.add("Linha " + (i + 1) + ": " + ex.getMessage());
+            }
+        }
+
+        return LeadCsvImportResult.builder()
+                .totalProcessed(success + error)
+                .successCount(success)
+                .errorCount(error)
+                .errorMessages(errors)
+                .build();
+    }
 }

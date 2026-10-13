@@ -11,7 +11,8 @@ import {
   CheckCircle2,
   Loader2,
   X,
-  Tag
+  Tag,
+  FileDown
 } from 'lucide-react'
 
 export const ProposalsPage: React.FC = () => {
@@ -108,6 +109,24 @@ export const ProposalsPage: React.FC = () => {
       fetchData()
     } catch (err) {
       console.error(err)
+    }
+  }
+
+  const handleDownloadPdf = async (propId: string, propCode: string) => {
+    try {
+      const response = await api.get(`/proposals/${propId}/pdf`, {
+        responseType: 'blob'
+      })
+      const url = window.URL.createObjectURL(new Blob([response.data], { type: 'application/pdf' }))
+      const link = document.createElement('a')
+      link.href = url
+      link.setAttribute('download', `proposta-${propCode}.pdf`)
+      document.body.appendChild(link)
+      link.click()
+      link.remove()
+      window.URL.revokeObjectURL(url)
+    } catch (err: any) {
+      alert(err.response?.data?.message || 'Erro ao gerar documento PDF')
     }
   }
 
@@ -230,16 +249,26 @@ export const ProposalsPage: React.FC = () => {
                       </td>
 
                       <td className="px-6 py-4">
-                        <select
-                          value={prop.status}
-                          onChange={(e) => handleUpdateProposalStatus(prop.id, e.target.value)}
-                          className="text-xs px-2.5 py-1 rounded-lg border font-semibold bg-white cursor-pointer"
-                        >
-                          <option value="DRAFT">Rascunho</option>
-                          <option value="SENT">Enviada</option>
-                          <option value="ACCEPTED">Aprovada / Aceita</option>
-                          <option value="REJECTED">Recusada</option>
-                        </select>
+                        <div className="flex items-center gap-2">
+                          <select
+                            value={prop.status}
+                            onChange={(e) => handleUpdateProposalStatus(prop.id, e.target.value)}
+                            className="text-xs px-2.5 py-1 rounded-lg border font-semibold bg-white cursor-pointer"
+                          >
+                            <option value="DRAFT">Rascunho</option>
+                            <option value="SENT">Enviada</option>
+                            <option value="ACCEPTED">Aprovada / Aceita</option>
+                            <option value="REJECTED">Recusada</option>
+                          </select>
+
+                          <button
+                            onClick={() => handleDownloadPdf(prop.id, prop.code)}
+                            title="Baixar Proposta em PDF"
+                            className="p-1.5 rounded-lg border border-slate-200 text-slate-600 hover:text-blue-600 hover:border-blue-300 hover:bg-blue-50 transition-colors cursor-pointer"
+                          >
+                            <FileDown className="w-4 h-4" />
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   ))}

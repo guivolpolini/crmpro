@@ -32,6 +32,7 @@ public class DealService {
     private final PipelineStageRepository stageRepository;
     private final CompanyRepository companyRepository;
     private final ContactRepository contactRepository;
+    private final com.crmpro.audit.service.AuditLogService auditLogService;
 
     @Transactional(readOnly = true)
     public List<DealResponse> findAllForKanban() {
@@ -138,7 +139,16 @@ public class DealService {
             deal.setLostReason(null);
         }
 
-        return DealResponse.fromEntity(dealRepository.save(deal));
+        Deal saved = dealRepository.save(deal);
+        auditLogService.logAction(
+                tenantId,
+                "STAGE_TRANSITION",
+                "DEAL",
+                saved.getId().toString(),
+                "Negócio '" + saved.getTitle() + "' movido para o estágio '" + targetStage.getName() + "' (" + saved.getStatus() + ")"
+        );
+
+        return DealResponse.fromEntity(saved);
     }
 
     @Transactional
