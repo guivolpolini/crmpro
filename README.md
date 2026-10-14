@@ -1,155 +1,66 @@
-# CRM PRO — Sistema Completo de Gestão Comercial
+# 💼 CRM Pro
 
-[![CI/CD Pipeline](https://github.com/guivolpolini/crmpro/actions/workflows/ci.yml/badge.svg)](https://github.com/guivolpolini/crmpro/actions/workflows/ci.yml)
-[![Java 21/24](https://img.shields.io/badge/Java-21%20%7C%2024-orange.svg)](https://www.oracle.com/java/)
+> Um CRM B2B multi-tenant, rápido e direto ao ponto — construído para organizar funis de vendas, fechar propostas e garantir isolamento estrito de dados entre empresas.
+
+[![Java 21](https://img.shields.io/badge/Java-21-orange.svg)](https://www.oracle.com/java/)
 [![Spring Boot 3.4](https://img.shields.io/badge/Spring%20Boot-3.4.3-green.svg)](https://spring.io/projects/spring-boot)
 [![React 19](https://img.shields.io/badge/React-19-blue.svg)](https://react.dev/)
-[![TypeScript 6](https://img.shields.io/badge/TypeScript-6.0-blue.svg)](https://www.typescriptlang.org/)
-[![Tailwind CSS v4](https://img.shields.io/badge/TailwindCSS-v4-38bdf8.svg)](https://tailwindcss.com/)
-[![PostgreSQL 16](https://img.shields.io/badge/PostgreSQL-16-336791.svg)](https://www.postgresql.org/)
-
-CRM B2B moderno com arquitetura Multi-Tenant isolada, funil de vendas interativo tipo Kanban, conversão atômica de leads, catálogo de produtos com gerador de propostas comerciais e dashboard de analytics em tempo real.
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-blue.svg)](https://www.typescriptlang.org/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-336791.svg)](https://www.postgresql.org/)
+[![Docker](https://img.shields.io/badge/Docker-Compose-2496ED.svg)](https://www.docker.com/)
 
 ---
 
-## 🏛️ Arquitetura & Tecnologias
+## 💡 Por que este projeto existe?
 
-### Backend
-- **Java 21 / 24** com **Spring Boot 3.4.3**
-- **Spring Data JPA & Hibernate 6**
-- **PostgreSQL 16** com versionamento atômico via **Flyway Migrations** (V1 a V4)
-- **Spring Security 6** + **JWT (JJWT 0.12.6)** com HMAC-SHA256 e rotação de Refresh Token
-- **Multi-Tenancy por Coluna Discriminadora**: `organization_id NOT NULL` em todas as tabelas comerciais com resolução contextual via `TenantContext` (ThreadLocal).
-- **Testes Automatizados**: Spring Boot Test com banco em memória H2 (13 testes cobrindo segurança, multi-tenancy, conversão atômica, pipeline, propostas, relatórios, assistente IA, gestão de equipe e demo seed runner).
+A maioria dos CRMs de mercado (HubSpot, Salesforce, Pipedrive) sofre de dois extremos: ou são **caros e inflados demais** para operações ágeis, ou são **simples planilhas disfarçadas** sem segurança transacional.
 
-### Frontend
-- **React 19** + **TypeScript 6** com **Vite 8**
-- **Tailwind CSS v4** + Design tokens e UI anti-slop
-- **Lucide Icons** para consistência visual
-- **Recharts 3** para gráficos executivos interativos
-- **Axios** com interceptors para injeção automática de Bearer Token e auto-refresh em 401.
+Construí o **CRM Pro** com o objetivo de ter um sistema comercial completo, limpo e com padrão de código de produção:
+- **Segurança B2B real:** suporte nativo a múltiplas empresas (multi-tenant), sem risco de vazamento de dados.
+- **Transações ACID:** converter um lead em cliente não pode deixar registros órfãos pelo caminho.
+- **Interface fluida:** Kanban responsivo e sem lentidão para quem passa o dia movimentando negócios.
 
 ---
 
-## 🚀 Funcionalidades Principais
+## ✨ O que ele resolve na prática
 
-1. **Multi-Tenancy & Segurança**:
-   - Registro de nova Organização e Administrador em transação única.
-   - Isolamento total de dados por tenant (`TenantContext.getTenantId()`).
-   - Rotação de tokens e renovação sem deslogar o usuário.
-2. **Gestão de Contas & Contatos**:
-   - Cadastro de Empresas (CNPJ, razão social, setor, faturamento estimado).
-   - Cadastro de Contatos vinculados a empresas com cargos e telefones.
-3. **Leads & Conversão Atômica**:
-   - Qualificação com status (`NEW`, `CONTACTED`, `QUALIFIED`, `CONVERTED`, `LOST`).
-   - Endpoint `POST /api/v1/leads/{id}/convert`: cria Company + Contact + Deal e encerra o Lead em uma única transação ACID.
-4. **Funil de Vendas (Kanban Interativo)**:
-   - Provisão automática de 6 estágios padrão (*Prospecção, Qualificação, Apresentação, Proposta, Negociação, Fechamento*).
-   - Arraste visual ou botões rápidos para transição de estágios.
-   - Totalizadores de volume financeiro e quantidade de deals por coluna.
-5. **Operações Comerciais & Catálogo**:
-   - Checklist de Tarefas com toggle rápido de status (`PENDING` <-> `COMPLETED`).
-   - Histórico de Atividades (chamadas, reuniões, notas).
-   - Catálogo de Produtos e Serviços.
-   - Gerador de Propostas Comerciais com itens e geração de código serial sequencial (`PROP-XXXXXX`).
-6. **Dashboard Executivo & Analytics**:
-   - Cards KPI: Receita Ganha, Pipeline em Aberto, Taxa de Conversão de Leads e Tarefas Pendentes.
-   - Gráfico de barras com volume financeiro em cada etapa do funil.
-   - Gráfico de rosca com distribuição percentual de oportunidades.
+- **🏢 Multi-Tenancy Isolado:** Múltiplas organizações usam o mesmo banco, mas os dados são rigidamente segregados via contexto da requisição (`organization_id`). O que é da Empresa A, a Empresa B jamais enxerga.
+- **⚡ Conversão Atômica de Lead:** Com um clique, um Lead qualificado vira simultaneamente **Empresa + Contato + Negócio no Funil** em uma única transação de banco. Se qualquer etapa falhar, o rollback é automático.
+- **📊 Funil de Vendas Interativo (Kanban):** 6 estágios comerciais padronizados (*Prospecção, Qualificação, Apresentação, Proposta, Negociação e Fechamento*) com totalizadores de receita e cards arrastáveis.
+- **📑 Catálogo & Gerador de Propostas:** Tabela de produtos/serviços e emissão de propostas comerciais com numeração sequencial auditável (`PROP-XXXXXX`).
+- **📈 Dashboard Executivo:** Métricas reais de faturamento ganho, pipeline em aberto, taxas de conversão e tarefas pendentes.
 
 ---
 
-## 📂 Estrutura do Repositório
+## 🧠 Bastidores & Decisões de Arquitetura
 
-```text
-crmpro/
-├── .github/workflows/
-│   └── ci.yml                     # Pipeline GitHub Actions (Backend + Frontend)
-├── backend/                       # API REST Spring Boot 3.4
-│   ├── src/main/java/com/crmpro/
-│   │   ├── auth/                  # JWT, Auth Controller & UserDetails
-│   │   ├── company/               # Gestão de Empresas
-│   │   ├── contact/               # Gestão de Contatos
-│   │   ├── dashboard/             # Agregações analíticas e KPIs
-│   │   ├── deal/                  # Pipeline, Estágios e Negócios (Kanban)
-│   │   ├── lead/                  # Leads e conversão atômica
-│   │   ├── organization/          # Entidade Tenant
-│   │   ├── product/               # Catálogo de produtos
-│   │   ├── proposal/              # Propostas comerciais
-│   │   ├── security/              # Filtros JWT e TenantContext
-│   │   ├── task/                  # Checklist de tarefas
-│   │   └── user/                  # Usuários e papéis
-│   └── src/main/resources/db/migration/ # Flyway SQL migrations (V1 a V4)
-├── frontend/                      # Single Page Application React 19
-│   ├── src/
-│   │   ├── components/layout/     # AppLayout com sidebar e header
-│   │   ├── features/              # Módulos verticais (auth, crm, pipeline, dashboard, etc.)
-│   │   ├── lib/                   # Cliente HTTP Axios configurado
-│   │   └── types/                 # Interfaces TypeScript tipadas
-├── docker-compose.yml             # Postgres 16 pronto para uso
-└── README.md
-```
+### Back-end (Java 21 + Spring Boot 3.4)
+- **Multi-Tenancy contextual:** Implementado com interceptor e `ThreadLocal` (`TenantContext`). Toda query ao PostgreSQL é filtrada pelo tenant logado, eliminando risco de esquecimento em cláusulas `WHERE`.
+- **Versionamento de banco:** Migrações com **Flyway** (V1 a V4), permitindo recriar a estrutura exata do banco em qualquer ambiente sem scripts manuais.
+- **Segurança & JWT:** Spring Security 6 com autenticação stateless HMAC-SHA256 e rotação de Refresh Token.
+
+### Front-end (React 19 + TypeScript + Tailwind CSS v4)
+- **Zero fricção de sessão:** Cliente Axios configurado com interceptors que capturam status `401` e renovam o token silenciosamente em segundo plano, sem chutar o usuário para fora da tela.
+- **Gráficos com Recharts:** Visualização analítica do funil e distribuição percentual de vendas sem bibliotecas pesadas de terceiros.
 
 ---
 
-## 🛠️ Como Executar Localmente
+## 🧪 Confiabilidade & Testes
+
+Não adianta prometer isolamento de dados sem provar no código. O projeto inclui testes de integração automatizados rodando sobre banco H2:
+
+- `MultiTenancySecurityTest`: valida que uma organização é bloqueada ao tentar consultar dados de outra.
+- `LeadConversionIntegrationTest`: testa a atomicidade da conversão Lead ➔ Company + Contact + Deal.
+- `DealPipelineIntegrationTest`: garante integridade dos valores ao movimentar cards entre etapas do funil.
+- `TaskAndProposalIntegrationTest`: valida cálculos de propostas comerciais e checklists de tarefas.
+
+---
+
+## 🚀 Como rodar em 1 minuto
 
 ### Pré-requisitos
-- **Docker** e **Docker Compose** (recomendado para inicialização em 1 comando)
-- Ou **Java 21/24** + **Node.js 20+** e **npm** para desenvolvimento local
+- [Docker](https://www.docker.com/) e Docker Compose instalados.
 
-### Opção 1: Inicialização Completa com Docker (1 Comando)
-Para subir o banco de dados PostgreSQL 16, a API Spring Boot 3.4 e o Frontend React com Nginx:
+### Subir tudo (Banco + Back-end + Front-end)
 ```bash
 docker compose up --build -d
-```
-Acesse a aplicação pronta em `http://localhost:3000` ou `http://localhost`.
-
-### Opção 2: Execução em Modo Desenvolvimento Local
-
-#### 1. Iniciar Banco de Dados
-```bash
-docker compose up -d postgres
-```
-O PostgreSQL estará disponível em `localhost:5432` com usuário `crmpro_user` e senha `crmpro_password`.
-
-#### 2. Iniciar API Backend
-```bash
-cd backend
-./mvnw spring-boot:run
-```
-A API iniciará na porta `8080`.
-As migrações do banco serão aplicadas automaticamente pelo Flyway.
-
-Para rodar a suíte completa de 10 testes automatizados:
-```bash
-./mvnw test
-```
-
-#### 3. Iniciar Frontend
-```bash
-cd frontend
-npm install
-npm run dev
-```
-Acesse a aplicação em `http://localhost:5173`.
-
----
-
-## 🧪 Testes Automatizados
-
-A suíte de testes backend valida todos os fluxos críticos:
-- `MultiTenancySecurityTest`: garante que uma organização nunca acessa dados de outra.
-- `LeadConversionIntegrationTest`: valida a conversão transacional atômica de Lead -> Company/Contact/Deal.
-- `DealPipelineIntegrationTest`: valida criação de estágios, deals e movimentação no funil.
-- `TaskAndProposalIntegrationTest`: valida toggle de tarefas, catálogo de produtos e propostas comerciais.
-- `DashboardAnalyticsIntegrationTest`: valida cálculos de receita ganha, pipeline aberto e taxas de conversão.
-- `ReportPerformanceIntegrationTest`: valida agregação de faturamento mensal, ranking de vendedores e exportação CSV.
-- `AiCommercialIntegrationTest`: valida geração de pitches e abordagens via LLM com fallback resiliente.
-- `OrganizationManagementIntegrationTest`: valida atualização cadastral da organização e gestão multi-usuário da equipe comercial.
-- `DemoDataSeedIntegrationTest`: valida injeção em massa de dados de demonstração (empresas, contatos, leads e pipeline) e reflexo analítico imediato.
-
----
-
-## 📄 Licença
-Distribuído sob licença MIT. Desenvolvido por [Guilherme Volpolini](https://github.com/guivolpolini).
